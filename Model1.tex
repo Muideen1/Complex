@@ -1,0 +1,212 @@
+\documentclass[10pt]{article}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+ \usepackage{array}
+\usepackage{xcolor}
+\usepackage{float}
+\setlength{\parindent}{15.0pt}
+\setlength{\parskip}{1em}
+\graphicspath{{c:/images/}}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pifont}
+\begin{document}
+\title{Software Engineering for a Complex Domain Model to a Platform Model}
+\author{Muideen~Ajagbe,
+        Fiona A.C~Polack
+        and~Richard~Paige,\\
+Department of Computer Science\\
+University of York\\
+York, UK YO10 5DD\\
+Email: maa589@york.ac.uk}
+\date{\vspace{-5ex}}
+\maketitle
+\begin{abstract}
+The paper presents a practical approach to the transformation of UML-style activity diagrams to class diagrams and OO code. Activity diagrams have been widely used to model behavioral aspects of complex systems – our work uses models produced as part of simulation design of aspects of complex immune systems in York Computation Immunology Lab. Automated transformation to code makes the implementation of complex systems repeatable and maintainable.
+\end{abstract}
+\section{Introduction}
+An effective software-engineering process for modeling complex system uses models, often shown with different UML diagram. Modeling a complex systems involves detailed behavior (abstraction) at high level due to its many simple behavior in low level \cite{Polack08complexsystems}. As complex system involves high level of abstraction due to its increased complexity, a concrete model helps capture a system under development as a whole. In perspective, diagrams used for representing the role of a system by York Computation Immunology Lab (YCIL)\footnote{York Computation Immunology Group: https://www.york.ac.uk/computational-immunology/publications/} group are mostly behavioral hence the need to transform them to a class structure for textual and code generation that will enables easy analysis of the emergent behaviors in the system.
+
+Model is a form of abstraction that is developed to help understand what the system entails \cite{Brambilla:2012:MSE:2432361}. The abstractions captured uses software engineering approach like Model Driven Engineering (MDE) which target the concerned domain of a model. 
+
+MDE helps capture the artefacts, data and every associated part of a domain model in a system \cite{Schmidt:2006:GEI:1115688.1115706}. For example, due to the concerned behavior of a complex system, models used by the YCIL group are often represented in UML activity diagram showing the system (actors) different roles. The application of MDE practices will help aid model to model (M2M) transformation needed for code generation and graphical comparison which is the result of the system's simulations.
+
+Our paper aims to show an approach to M2M - activity diagram (AD) to class diagram (CD), model-rule syntax, code generation and how that process could be carried out. From the CD, object oriented (OO) java code can be generated as a class structure with operations and attributes providing a vivid representation of the occurrence in a system. OO code evolved from concepts of object rather than logic \cite{Kindler}. Here, we automate all our process by conforming to Object Management Group (OMG)\footnote{Object Management Group Unified Modeling Language: http://www.omg.org/spec/UML/} UML standard rule. A top down methodology approach is used in transforming our model and a rule-based approach is used with tool support for automation and model analysis. 
+
+\section{Motivation and Related Work}
+
+In this section, we discuss the motivation for our work and the goals we want to achieve. We analyze our approach to model transformation and well as earlier work.
+	\subsection{Motivation}
+The main motivation for the transformation of AD to CD stems from the YCIL group work. Domain model from the group is often represented using an activity diagram. The activity diagram shows actor's role in a system, therefore, there are limited data representing the whole system. This leads to the need to transform the AD to a CD so as to generate code which can be used to understanding the emergent behavior from their work or any complex system.
+
+Furthermore, during the elicitation process of our provided domain, we determine that providing a generic basis for an effective transformation will provide a robust and fit-for purpose class diagrams which can be further refined to an agent for simulations or used to generate OO code.
+	
+As all the YCIL theses \cite{Read2011},\cite{Moyo2014},\cite{Richard2014} use similar modeling diagrams to but hand-craft code for simulation. The handcrafted simulation(in code) can be clearly written once, difficult to reuse and maintain. Also, a change that is easy to make in a diagram may require significant re-engineering of code. For example, the YCIL simulators are all closely related, but each has been separately engineered to address a different question or a different part of the immune system.
+
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[scale=0.7]{mrad}
+  \caption{The activity diagram provided by \cite{Read2011} from YCIL group.}
+  \label{fig:mrad}
+\end{figure}
+More so, handcrafted code might contain errors and may not reflect the actual representation of the models in contrast with a generated code. MDE can both properly underpin the diagram notations and support transformation to code. Our ultimate goal is to be able to:
+\begin{enumerate}
+\item Effectively provide a transformation process from AD to CD.
+\item Reliably and systematically generate code from YCIL-style diagrams.
+\item Reliably and systematically generate revised code when models (diagrams) are modified.
+\item Support reuse and modification of the existing platform models and simulations.
+\end{enumerate}
+
+	\subsection{Related Work}
+There is no acceptable standard approach to this type of M2M transformation as such little work has been carried out in this area. There are published articles that lean towards these transformations but they are not concrete enough. Molina \textit{et al} \cite{Molina} presents an approach to use-cases and conceptual models through business models. The approach here lay emphasis on the use of business use cases to business activity diagram. The identification of roles in the scenarios leads to creation of interaction diagrams and a class diagram which can be analyzed for matching components.
+
+Also, Suarez \textit{et al} \cite{Suarez} detail a transformation from a business model point of view. Here, use-cases are used to build an activity diagram. A prescribed translation rule is the used to translate the AD to a CD. Barros \textit{et al} \cite{Barros_fromactivity} presents a process to deriving class diagrams using algorithm translation. This process offers a starting point to our approach but they are not capturing enough data from a high abstraction level.
+
+The context of transformation in \cite{Barros_fromactivity} is built upon metamodel from some known use-case scenarios where translation of metamodel is done arbitrarily. This approach, however, enables the AD to comply to a domain specific language (DSL) and OMG standard for components of a CD. The translated AD and CD are further refined to a metamodel so as to deduce available translated components. Building on all these related work, we propose a concrete model transformation by incorporating a metamodel built using a translated CD with the aid of Eclipse Modeling Framework Ecore proposed in \cite{Johannes}.
+	
+\section{Model Transformation}
+In this section, we discuss the need for model transformation, our model categorization how it will help us with the transformation of AD to CD
+
+	\subsection{Model}
+Model is made up of artefacts that is derived from capturing the abstraction of a system\cite{Polack08complexsystems}. The act of building models is referred to as modeling. Models, once built, are amenable to automated manipulation and analysis. This gives basis for a better understanding of the composition of the model. The structure of a model is rooted in the identification of crucial element and available objects as presented in the system’s information thereby eliminating duplication and inconsistency. Based on motivation from the CoSMoS approach \cite{Garnett_usingthe}, we seek to categorize our views on model into components which represent the context of our work. Our models are categorized into the following compartments:
+\begin{itemize}
+\item The Domain Model (DM)
+\item The Platform Model (PM)
+\item The Result Model (RM)
+\end{itemize}
+
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[scale=0.6]{compartment}
+  \caption{The compartment showing movement from DM to PM to RM.}
+  \label{fig:compartment}
+\end{figure}
+
+As the DM identifies and outlines the interactions and behavior of the system domain, our PM provides a design model that details occurrences in the domain. On the other hand, the RM shows result of what has been done to the PM (mostly simulations) and act as a comparison standard for the actions of the DM. In addition, a rigid model gives basis for a good modeling thus, a fit-for-purpose code is generated and an emergent behavior can be detected by further simulation.
+
+\subsection{Modeling and Transformation}
+The process of modeling involves the crucial understanding of the system at play. Unified Modeling Language (UML) is used as the industry standard for modeling. Based on the YCIL work in \cite{software}, UML activity diagram is used to capture the DM of interest \cite{Donald2003}. The aim is to model an AD to a CD which allows the continuous traceability of provided artefacts to code generation. As discussed in \cite{cosmos:tech-report}, the concept of domain modeling is crucial to a complex systems development. Nonetheless, without a concrete transformation of a model system in AD to a CD, little information about the system under development will be provided.
+
+A well translated AD to CD is aimed at producing executable code. As reasoned from the above chapter,  \cite{Barros_fromactivity} proposed a means of formalizing mappings between AD and CD with the use of metamodels and the reverse engineering capability of any OO code generated.  While this makes model transformation feasible, our view is to augment the data from the activity into an object which can be used to build an Object diagram (OD). This OD is then reverse-instantiated and engineered to a CD in the PM. An engineered CD is used to build a metamodel and a model representing the abstract view and the crucial details present in the system. A resulting code or textual explanation presents meaning to our research context in the RM.
+
+\section{Requirement for Model Transformation}
+In this section we discuss in details, the approach we took towards our translation of AD to CD using models derived from an engineered metamodel using MDE approaches. Due to the high level of abstraction on the YCIL work, we use the open source modeling platform in epsilon called EMF.
+
+As stated in the above chapter, we transform our AD to an OD which we further refined to deriving a CD. We develop this method using an incremental approach. This gives room for us to modify the originating data or object from the AD. Based on Complex system and modeling simulation approach CoSMoS in \cite{cosmos:tech-report}, the AD describing the flow of action is our DM. We propose a meta-domain model consisting of the objects in the OD. This gives a basis for us to refine the OD to a PM which is represented by the engineered CD. The issues of conformance of the AD to the OD hinges on two rules which are:
+\begin{enumerate}
+\item Analyze the actions of the AD that represent data or object and represent them as Object in the OD.
+\item Analyze any common properties and represent them as a Value in the OD.
+\end{enumerate}
+It is important for us to have the right element for transformation. A well annotated activity diagram that conforms to the above rules provides a starting point towards transformation. It is also noteworthy not to leave any details out. A concrete transformation will aid the correctness of the system when it undergoes further work like transition or simulation.
+
+\section{Model Mapping and Rule}
+As discussed in the above section, the conformance guidelines helps give a robust transformation of our models represented by the AD to a more generic OD. In this section, we discuss how our defined rules and guidelines help define the composition of our model and the necessary perspective for our model transformation. 
+
+\subsection{Model Process}
+In order to present a generic form of model transformation, we move to utilize the concept of UML modeling that present a systems artefacts and adopted modeling mechanism(in our view, AD, OD and CD) as the true representation of the system being modeled. Under this circumstance, transformation of model involves critical process that needs to conform to the modeled system regardless of the complexity involved. However, since there is no generally accepted form of transformation from AD to CD, we proffer a solution through our modeling process and approach. Our premise is the use of CD to generating OO code:
+\begin{itemize}
+\item We assume an OO target, so a class model provides structure of the code.
+\item We extract Objects and Slots from behavioral models i.e. the AD and can thus transform AD to an OD.
+\item We reverse-engineered our transformed OD to a CD where codes can be generated.
+\end{itemize}
+
+\subsection{Mapping AD to OD}
+It is tedious and very difficult to derive OO code from behavioral diagrams as the structural features are not well detailed. However, transforming an AD to an OD requires the identification of object and thus provides a more structural view of the system's behavior. We map AD to OD by extracting and instantiating objects or data presented in the AD using the following preconditions and association basis:
+\subsubsection{Preconditions}
+\begin{enumerate}
+\item Identity actions in the AD that can be refined as an Object.
+\item identify characteristics of the action that can be refined as a Slot.
+\item Identify data flow in and out of the activity which can be refined as a Link.
+\item Objects representing the same data is instantiated as a single Object
+\item An action derived from another action is translated to a super-Object.
+\end{enumerate} 
+\subsubsection{Associations}
+\begin{enumerate}
+\item Data flows in and out of the activity is examined with any accompany adjectives(label) and thus translated as a classifier or association relationship.
+\item The data flows are compared for any common relation wherein any common relation creates basis for the generalization of the association between objects of the OD.
+\item Decision points which are Boolean operations is translated as either 1 to Many or Many to Many relations depending on the attributes between the AD's activities.
+\end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[scale=0.6]{odad}
+  \caption{The modules showing transformation from AD to OD.}
+  \label{fig:odad}
+\end{figure}
+
+Schematically, this process of transformation from AD to OD is represented in Figure~\ref{fig:odad}, wherein lies the module surface named activity block showing the available data or objects present in the activity diagram. The other module named object block has spherical shape representing the refined object. The arrows maps each activity data from the first block to an object in the second block.
+\section{Rule-Based Model Transformation}
+Having defined the context from which our model lies. We sought to make our model concrete by presenting a generic basis for transformation defined by rules. The rule is agnostic and we aim to implement it towards automation of the system in general. In the above antecedent, we discuss mapping of our process to give a rigid transformation. Here, we back-up our approach by using rules to form a more generic basis for transformation.
+\subsection{Model-Rule Syntax}
+We examine an operation of a system and the possible events that may occur in it. This leads us to classify actions of an activity as a model-driven event which gives form of a persistent occurrence in the system. We classify this actions as operations of create, retrieve, update and delete (CRUD). We analyze the choice of words and adjectives used to fit in the context of CRUD operations.
+For create:
+\begin{enumerate}
+\item IF activity is \underline{Create}
+\item then exist \underline{Object1} of
+\item Class \underline{Creating Activity}
+\item AND create \underline{Object2} of 
+\item Class \underline{Created Activity}
+\item AND create link 
+\item BETWEEN \underline{Object1} and \underline{Object2}
+\end{enumerate}
+We apply the same rule to the other operations - Retrieve, Update, and Delete. In applying this rule, we have a generic transformation of our objects in the OD. This rule is applied to help achieve a conceptual form of the system from the activity diagram.
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[scale=0.6]{OD}
+  \caption{The transformed OD from the AD in Figure~\ref{fig:mrad}.}
+  \label{fig:OD}
+\end{figure}
+\section{Model Reverse-Engineering}  
+In the chapters above, we have detailed the need for a CD and how that can be achieved with the concept of objects available in the AD being used to build an OD. Pedagogy and published journals has revealed that an object diagram is an instance of a class diagram. More so, an OD represents the static characteristics of a system by using presented objects and their accompanying relations as an instance. This means the OD is made up of things contained in CD.
+We already established the availability of objects in an activity hence the approach towards creating an OD out of AD. Since an OD is an instance of a class, we are presented with a relationship between an OD and a CD in the form of an instance. The reverse-instantiation or reverse-engineering of an OD gives a fit-for purpose CD where further work like code generation, representation of agents, simulation and other possible solutions. In achieving a standard reverse engineering from an OD to a CD, we propose the following rules:
+\begin{itemize}
+\item First, analyze the OD model and choose the instances with more important data and association
+\item Second, analyze the instances that cover the functionality
+\item Third, analyze the optimization having the limited instances
+\end{itemize}
+After considering the above rules, it is imperative to understand the below concepts carefully:
+\begin{itemize}
+\item Class diagram consist classes
+\item The reference in the class diagram are used to connecting classes.
+\item Classes and references are the building blocks of the class
+\item Characteristics (attributes and operations) are the formal parameters or method showing the behavioral characteristics of the system.
+\end{itemize}
+For the full reverse engineering, the following actions is carried out;
+\begin{itemize}
+\item The Object in the OD is reverse-engineered into the CD's class as its the object type.
+\item The Link in the OD is reverse-engineered into the CD's association as its the instance of relationships.
+\item The Value or SLOT in the OD is reverse-engineered into the CD's characteristics as its the attribute type.
+\end{itemize}
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[scale=0.8]{metamodel}
+  \caption{An Epsilon Emf metamodel representing the class diagram reverse-engineered from the OD.}
+  \label{fig:metamodel}
+\end{figure}
+By using this approach, we have a more concrete transformation of AD to CD through the reverse engineering of the OD. In this circumstance, the outcome of the DM is the AD, the OD is the first meta-level of PM and the CD is the higher meta-level. With a fit-for purpose CD, codes is generated thereby generated using EMF to model the CD. 
+
+\section{Automation}
+In this chapter, we discuss the automation of our models which provides basis for test cases and effective drawing of our AD and OD and the modeling of the engineered CD.
+\subsection{Papyrus}
+Papyrus\footnote{Papyrus modeling environment: https://eclipse.org/papyrus/} is an open source model-based engineering tool built on Eclipse. It enables an integrated environment where UML can be edited. It can be easily customized to provide support for diagram notations, exploring models and model-based simulations. Based on this features, we use papyrus to develop a tool for our system modeling. This tool help us develop our AD and translated OD. Essentially, Papyrus assists in automating the different diagrams representing our system’s complexity
+
+\subsection{Eclipse Epsilon}
+Eclipse Epsilon \footnote{Epsilon :http://www.eclipse.org/epsilon/} "is a family of languages and tools used for code generation, M2M transformation, model validation, comparison, migration and refactoring that work out of the box with EMF and other types of models". We use it to build our metamodel (CD) and generate our OO (java) code which will help in providing a textual meaning for a resulting model of the system. Most importantly, a model editor can be generated for further reuse and easy transformation to other models. We regard using these approach for concrete modeling of a fit-for-purpose model.
+\section{Discussion and Conclusions}
+We made use of the approach stated earlier to provide a modeling transformation and simulation for the YCIL AD. The transformation leading to simulation (code generation) has proved effective to producing a RM which details the emergent behavior of the modeled system. We have tried this approach on several activity diagram and we hope to cover more ground by applying it more on YCIL ADs which are more complex. Further work includes seeing our objects as agent thereby developing an approach that augment an Agent Based Modeling (ABM). 
+
+As retorted earlier, there is no current standard method being used for transforming AD to CD. Starting from modeling complex autoimmune systems, we proffer an approach and tool for doing this. We showed a detail a transformation of AD to CD using objects thus enabling the generation of reusable code.
+
+The UML diagram afforded us the opportunity to use different diagrams and our approach enables us to develop a tool that capture the domain of interest. The modeling is made as simple as possible to capture our our and the generated code is relayed to the RM which can be easily identified by the domain experts. Our model was automated using eclipse papyrus tool and EMF which enable us to draw the AD with OD and modeling of the CD respectively. The tools are open source which allows for re-usability of our tool and approach. 
+
+
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{modelref}
+  
+\end{document}

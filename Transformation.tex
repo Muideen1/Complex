@@ -1,0 +1,86 @@
+\documentclass[10pt]{article}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+ \usepackage{array}
+\usepackage{xcolor}
+\usepackage{float}
+\setlength{\parindent}{15.0pt}
+\setlength{\parskip}{1em}
+\graphicspath{{c:/images/}}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pifont}
+\begin{document}
+\title{Complex System Simulation: Processes and Transformation from Activity Diagram to Class Diagram}
+\author{Muideen~Ajagbe,
+        Fiona A.C~Polack
+        and~Richard~Paige,\\
+Department of Computer Science\\
+University of York\\
+York, UK YO10 5DD\\
+Email: maa589@york.ac.uk}
+\date{\vspace{-5ex}}
+\maketitle
+\begin{abstract}
+The paper presents a practical approach to the transformation of UML-style activity diagrams to class diagrams and OO code. Activity diagrams have been widely used to model behavioral aspects of complex systems – our work uses models produced as part of simulation design of aspects of complex immune systems in York Computation Immunology Lab. Automated transformation to code makes the implementation of complex systems repeatable and maintainable.
+\end{abstract}
+\section{Introduction}
+A solid Software Engineering process for a system makes use of domain models, often shown using different UML diagram. These diagrams are mostly behavioral hence the need to transform them to a class structure for easy analysis of the emergent behaviors in the system. Model is a form of abstraction that is formed to help understand the system. The abstractions captured uses software engineering approach like Model Driven Engineering (MDE) which target the concerned domain. MDE help capture the artefacts, data and every associated part of a domain model in a system. For example, models used by the YCIL group are often represented in UML activity diagram showing the system different roles. The application of MDE practices will help aid model to model (M2M) transformation, code generation and graphical comparison which can be further refined to aid simulations.
+
+Our paper aims to show an approach to model transformation i.e. activity diagram (AD) to class diagram (CD), model comparison and model rules and how that process could be carried out. From the Cd, object oriented (OO) code can be generated as a class structure with operations and attributes provides a vivid representation of the occurrence in a system. Here, we automate all our process by conforming to OMG standard rule. A top down methodology approach is used in transforming our model and a rule-based approach is used with tool support for automation and model comparison. 
+
+\section{Motivation and Related Work}
+
+In this section, we discuss the motivation for our work and the goals we want to achieve. We analyze our approach to model transformation and well as earlier work.
+	\subsection{Motivation}
+	The main motivation for the transformation of activity diagram to class diagram stems from the YCIL group work. Domain model from the group is often represented using an activity diagram. The activity diagram provides roles of actors in a system therefore there are limited data representing the whole system. This leads to the need to transform the AD to a CD so as to generate codes which can be used to understanding the emergent behavior from their work or any modeled system. However, during the elicitation process of our provided domain, we determine that providing a generic basis for an effective transformation will provide a robust and fit-for purpose class diagrams which can be further refined to an agent or used to generate Object Oriented code.
+	
+As all the YCIL theses [cite] use similar modeling diagrams to but hand-craft code for simulation. The handcrafted code can be clearly written once and easily reused. However, handcrafted code might contain errors and may not reflect the actual representation of the models in contrast with a generated code. MDE can both properly underpin the diagram notations and support transformation to code.
+
+The ultimate goal is to be able to:
+\begin{enumerate}
+\item Effectively provide a transformation process from AD to CD.
+\item Reliably and systematically generate code from YCIL-style diagrams.
+\item Reliably and systematically generate revised code when models (diagrams) are modified.
+\item To support reuse and modiﬁcation of the existing platform models and simulations.
+\end{enumerate}
+
+	\subsection{Related Work}
+There is no acceptable standard approach to modeling of this type of model transformation as such there is little work being carried out in this area. There are published articles that lean towards these transformations but they are not concrete enough. Molina et al [cite] presents an approach for use case and conceptual models through business models. The approach here lay emphasis on the use of business use cases to business activity diagram. The identification of roles in the scenarios leads to creation of interaction diagrams and a class diagram which can be analyzed for matching components. Also, Suarez Ernesto [cite] detail a transformation from a business model point of view. Use-cases are used to build an activity diagram. A prescribed translation rule is the used to translate the AD to a CD. Barros [cite] presents a process to deriving class diagrams using algorithm translation. This process offers a starting point to our approach but they are not capturing enough data from a high abstraction level.
+
+The context of transformation in Barros is built upon metamodel from some known use-case scenarios where translation of metamodel is done arbitrarily. This approach, however, enables the AD to comply to a DSL and Object Management Group (OMG) standard for translation to a CD. The translated AD and CD are further refined to a metamodel so as to deduce available translated components. A further work is the concrete model transformation being carried out using the metamodel approach in the Eclipse Modeling framework proposed in [cite]. EMF is a general-purpose tool kit build upon eclipse platform.  With EMF, domain model can be built and implemented explicitly. Also, OO code can be used to generate java code which will help in providing a textual model for a result model of the system. Most importantly, a model editor can be generated for further reuse and easy transformation to other models. We regard these approach as a concrete transformation for a fit-for-purpose model.
+	
+\section{Model Transformation}
+	
+In this section, we discuss the need for model transformation, how it will help us with the transformation of AD to CD
+
+	\subsection{Model}
+	Model is made up of artefacts that is derived from capturing the abstraction of a system. The act of building models is referred to as modeling. Models, once built, are amenable to automated manipulation and analysis. This gives basis for a better understanding of the composition of the model. The structure of a model is rooted in the identification of crucial element and available objects as presented in the system’s information thereby eliminating duplication and inconsistencies. 
+	
+We seek to define our views on model to represent the context of our work. We have a domain model (DM), platform model (PM) and result model (RM). As the DM identifies and outlines the interactions and behavior of the system or domain, our PM provides a design model that details occurrences in the domain. On the other hand, the RM shows result of what has been done to the PM (mostly simulations) and act as a comparison standard for the actions of the DM. In addition, a rigid model gives basis for a good modeling thus, a fit-for-purpose code is generated and an emergent behavior can be detected by further simulation.
+
+\subsection{Modeling and Transformation}
+The process of modeling involves the crucial understanding of the system at play. Unified Modeling Language (UML) is used as the industry standard for modeling. Based on the YCIL work, UML activity diagram is used to capture the domain model of interest. The aim is to model this AD to a CD that which allows the continuous traceability of provided artefacts to code generation. As discussed in [cite], the concept of domain modeling is crucial to a systems development. Nonetheless, without a concrete transformation of a model system in activity diagram to a class diagram, little information about the system under development will be provided.
+
+A well translated AD to CD is aimed at producing executable code. In further work Barros, they proposed a means of formalizing mappings between AD and CD with the use of metamodels and the reverse engineering capability of any OO code generated.  While this makes model transformation feasible, our view is to augment the data from the activity into an object which can be used to build an Object diagram. This OD is then reverse-instantiated and engineered to a class diagram. An engineered CD is used to build a metamodel and a model representing the abstract view and the crucial details present in a system
+
+\section{Requirement for model Transformation}
+In this section we discuss in details, the approach we took towards our translation of AD to CD using models derived from an engineered metamodel using MDE approaches. Due to the high level of abstraction on the YCIL work, we use the open source modeling platform in epsilon called EMF.
+
+As stated in the above chapter, we transform our AD to an OD which we further refined to deriving a CD. We develop this method using an incremental approach. This gives room for us modify the originating Object from the AD. Based on YCIL principles, the AD describing the flow of action is the domain model. We propose a meta-domain model consisting of the objects in the OD. This gives a basis for us to refine the OD to a PM which is represented by the engineered CD. The issues of conformance of the AD to the OD hinges on two rules which are:
+\begin{enumerate}
+\item Analyze the actions of the AD that represent Data and represent them as Objects
+\item Analyze any common properties and represent them as a Value
+\end{enumerate}
+
+\section{Model Mapping}
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{References}
+  
+\end{document}

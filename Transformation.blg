@@ -1,0 +1,18 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: Transformation.aux
+The style file: IEEEtran.bst
+Database file #1: References.bib
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in Luke:2005:MMS:1086873.1086877
+Warning--empty journal in Software
+Warning--empty year in Software
+Warning--empty year in Garnett_usingthe
+Warning--empty journal in Donald2003
+Warning--empty journal in OMG2015
+Warning--empty journal in Martin2014
+Warning--empty journal in EMF
+Warning--empty year in EMF
+
+Done.
+(There were 9 warnings)
